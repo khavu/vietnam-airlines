@@ -23,24 +23,28 @@ def home():
     return "Welcome to my website"
 
 
-@app.route("/search", methods=['POST'])
-def search():
-    request.form['inputSearch']
+@app.route("/search", methods=['GET', 'POST'])
+def search_entry():
+    inputsearch = request.form['inputsearch']
+    cur = connect_db()
+    cur.execute("select %s from vnairline.user_info where EMBOSSED_NAME like '%s';" % (fields, inputsearch))
+    outputsearch = cur.fetchall()
+    return render_template('vnairline.html', fields=fields.split(','), user_info=outputsearch)
 
 
 @app.route("/projects/vnairline")
 def show_user_info():
-    fields = "ID_NUMBER,EMBOSSED_NAME,DOB1,GENDER,CREATE_DATE,STATUS_CODE,SALUTATION,BUS_COMPANY_NAME," \
-             "STREET_FREE_TEXT,ADDRESS_2,ADDRESS_3,CITY_NAME,STATE_PROVINCE_NAME," \
-             "POSTAL_CODE,COUNTRY,EMAIL_ADDRESS"
-
     cur = connect_db()
-    cur.execute("select %s from vnairline.user_info limit 1000;" % fields)
+    cur.execute("select %s from vnairline.user_info limit 25;" % fields)
     user_info = cur.fetchall()
     print(user_info)
     return render_template('vnairline.html', fields=fields.split(','), user_info=user_info)
 
 
 if __name__ == "__main__":
+    fields = "ID_NUMBER,EMBOSSED_NAME,DOB1,GENDER,CREATE_DATE,STATUS_CODE,SALUTATION,BUS_COMPANY_NAME," \
+             "STREET_FREE_TEXT,ADDRESS_2,ADDRESS_3,CITY_NAME,STATE_PROVINCE_NAME," \
+             "POSTAL_CODE,COUNTRY,EMAIL_ADDRESS"
+
     app.run('0.0.0.0', 5000)
 
