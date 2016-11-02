@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Vietnam Airline</title>
+    <link rel="stylesheet" href="/default.css" media="screen">
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" media="screen">
+    <link rel="icon" type="image/png" href="/favicon.png">
+</head>
+<body>
+<table cellspacing="0" class="table table-bordered table-hover table-condensed">
+<thead>
+<tr>
+    {% for field in fields %}
+    <th class="name sorting" tabindex="0" aria-controls="data" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending" style="width: 211px;">{{ field }}</th>
+    {% endfor %}
+
+</tr>
+</thead>
+{% for info in user_info %}
+    <tr>
+    {% for value in info %}
+        <td>{{ value }}</td>
+    {% endfor %}
+    </tr>
+{% endfor %}
+
+</table>
+
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//vuquangkha.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+<footer class="footer">
+    <div class="container-fluid">
+        <p class="copyright">Built with <i class="glyphicon glyphicon-heart text-danger"></i> by <a
+                href="https://vn.linkedin.com/in/khavu" target="_blank">@khavu</a> in Saigon.</p>
+    </div>
+</footer>
+</body>
+</html>
