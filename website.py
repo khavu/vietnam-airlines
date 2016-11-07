@@ -1,6 +1,9 @@
-import pymysql
+
+
+import string
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
 from flaskext.mysql import MySQL
+
 
 # create our little application
 mysql = MySQL()
@@ -26,8 +29,10 @@ def home():
 @app.route("/search", methods=['GET', 'POST'])
 def search_entry():
     inputsearch = request.form['inputsearch']
+    whitelist(inputsearch)
     cur = connect_db()
-    cur.execute("select %s from vnairline.user_info where EMBOSSED_NAME like '%s';" % (fields, inputsearch))
+    cur.execute("select {fields} from vnairline.user_info where EMBOSSED_NAME like '%%{inputsearch}%%';".
+                format(fields=fields, inputsearch=inputsearch))
     outputsearch = cur.fetchall()
     return render_template('vnairline.html', fields=fields.split(','), user_info=outputsearch)
 
@@ -39,6 +44,21 @@ def show_user_info():
     user_info = cur.fetchall()
     print(user_info)
     return render_template('vnairline.html', fields=fields.split(','), user_info=user_info)
+
+
+@app.route("/hack")
+def hack():
+    return render_template('hack.html')
+
+
+def whitelist(textinput):
+    white_list = list(string.ascii_letters + string.digits + string.whitespace)
+    for char in list(textinput):
+        if white_list.count(char) > 0:
+            print('ok')
+        else:
+            print('hack')
+            redirect(url_for('hack'))
 
 
 if __name__ == "__main__":
