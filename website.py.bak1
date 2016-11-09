@@ -1,4 +1,5 @@
 
+
 import string
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
 from flaskext.mysql import MySQL
@@ -20,6 +21,12 @@ def connect_db():
     return cursor
 
 
+@app.route("/")
+def home():
+    return "Welcome to my website"
+
+
+# @app.route("/search", methods=['POST'])
 def search_entry(inputsearch, inputsearch_birthday, page):
     if whitelist(inputsearch) and whitelist(inputsearch_birthday):
         cur = connect_db()
@@ -39,21 +46,6 @@ def search_entry(inputsearch, inputsearch_birthday, page):
         return "error_inputsearch", "1"
 
 
-def whitelist(textinput):
-    white_list = list(string.ascii_letters + string.digits + string.whitespace + "/")
-    for char in list(textinput):
-        if white_list.count(char) > 0:
-            pass
-        else:
-            return False
-    return True
-
-
-@app.route("/")
-def home():
-    return "Welcome to my website"
-
-
 @app.route("/projects/vnairline", methods=['GET', 'POST'])
 def show_user_info():
     if not request.args.get('page'):
@@ -66,10 +58,14 @@ def show_user_info():
             session.clear()
             contents = None
             last_page = None
+            print('test1')
         else:
             session['inputsearch'] = request.form['inputsearch']
             session['inputsearch_birthday'] = request.form['inputsearch_birthday']
+            print(session)
             contents, last_page = search_entry(session['inputsearch'], session['inputsearch_birthday'], page)
+            print(contents, last_page)
+            print('test2')
     else:
         if session and (session['inputsearch'] or session['inputsearch_birthday']):
             contents, last_page = search_entry(session['inputsearch'], session['inputsearch_birthday'], page)
@@ -77,7 +73,10 @@ def show_user_info():
             contents = None
             last_page = None
 
+    print('test')
+    print(session)
     if contents is None or last_page is None:
+        print(session)
         cur = connect_db()
         cur.execute("select %s from vnairline.user_info limit %d,25;" % (fields, 25 * (page - 1)))
         user_info = cur.fetchall()
@@ -90,11 +89,26 @@ def show_user_info():
                            last_page=last_page)
 
 
+@app.route("/hack")
+def hack():
+    return render_template('hack.html')
+
+
+def whitelist(textinput):
+    white_list = list(string.ascii_letters + string.digits + string.whitespace + "/")
+    for char in list(textinput):
+        if white_list.count(char) > 0:
+            pass
+        else:
+            return False
+    return True
+
+
 if __name__ == "__main__":
     app.secret_key = 'vqk12#$56'
-
     fields = "EMBOSSED_NAME,DOB1,GENDER,CREATE_DATE,STATUS_CODE,SALUTATION,BUS_COMPANY_NAME," \
              "STREET_FREE_TEXT,ADDRESS_2,ADDRESS_3,CITY_NAME,STATE_PROVINCE_NAME," \
              "POSTAL_CODE,POINTS_EXP_DATE,POINTS_EXP_AMOUNT,COUNTRY,EMAIL_ADDRESS"
 
     app.run('0.0.0.0', 5000)
+
