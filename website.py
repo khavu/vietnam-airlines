@@ -77,6 +77,8 @@ def show_user_info():
             contents = None
             last_page = None
 
+    print(session)
+    
     if contents is None or last_page is None:
         cur = connect_db()
         cur.execute("select %s from vnairline.user_info limit %d,25;" % (fields, 25 * (page - 1)))
